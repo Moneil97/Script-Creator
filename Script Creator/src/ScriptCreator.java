@@ -5,10 +5,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import javax.swing.JCheckBox;
@@ -62,22 +67,36 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 		super.stop();
 	}
 	
+	VBox events;
+	ScrollPane eventsScrollPane;
+	
 	@Override
 	public void start(Stage stage) throws Exception {
 		
 		stage.setTitle("Script Creator");
 		
 		HBox layout = new HBox();
-		Button butt1 = new Button("Record");
-		Button butt2 = new Button("Code");
-		Button butt3 = new Button("Load");
-		butt1.setOnAction(e -> {stage.setScene(record);});
-		butt2.setOnAction(e -> {stage.setScene(code);});
-		butt3.setOnAction(e -> {stage.setScene(load);});
-		layout.getChildren().addAll(butt1, butt2, butt3);
+		Button menuRecord = new Button("Record");
+		Button menuCode = new Button("Code");
+		Button menuLoad = new Button("Load");
+		menuRecord.setOnAction(e -> {stage.setScene(record);});
+		menuCode.setOnAction(e -> {stage.setScene(code);});
+		menuLoad.setOnAction(e -> {stage.setScene(load);});
+		layout.getChildren().addAll(menuRecord, menuCode, menuLoad);
 		
-		main = new Scene(layout, 300, 250);
+		//main = new Scene(layout, 300, 250);
+		//stage.setScene(main);
+		
+		eventsScrollPane = new ScrollPane();
+		eventsScrollPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+		events = new VBox();
+		events.getChildren().add(new Label("hi"));
+		eventsScrollPane.setContent(events);
+		main = new Scene(eventsScrollPane, 300, 250);
 		stage.setScene(main);
+		
+		//events.setContent(value);
+		//events.getChildren().add(new Label());
 		
 		record = new Scene(new HBox(new Button("record")));
 		code = new Scene(new HBox(new Button("code")));
@@ -118,6 +137,10 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 	@Override
 	public void nativeMouseWheelMoved(NativeMouseWheelEvent e) {
 		say("Scrolled: " + e.getWheelRotation());
+		Platform.runLater( () -> {
+			events.getChildren().add(new Label("Scrolled: " + e.getWheelRotation()));
+			eventsScrollPane.setVvalue(1.0);
+		});
 	}
 	
 	
