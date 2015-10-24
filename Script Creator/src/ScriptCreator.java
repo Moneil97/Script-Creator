@@ -1,36 +1,21 @@
-import java.awt.BorderLayout;
-import java.awt.Point;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
-import org.jnativehook.SwingDispatchService;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseInputListener;
 import org.jnativehook.mouse.NativeMouseMotionListener;
 import org.jnativehook.mouse.NativeMouseWheelEvent;
 import org.jnativehook.mouse.NativeMouseWheelListener;
-
-
 
 public class ScriptCreator extends Application implements NativeMouseInputListener, NativeMouseMotionListener, NativeMouseWheelListener{
 
@@ -65,6 +50,7 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 	@Override
 	public void stop() throws Exception {
 		super.stop();
+		System.exit(0);
 	}
 	
 	VBox events;
@@ -75,32 +61,14 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 		
 		stage.setTitle("Script Creator");
 		
-		HBox layout = new HBox();
-		Button menuRecord = new Button("Record");
-		Button menuCode = new Button("Code");
-		Button menuLoad = new Button("Load");
-		menuRecord.setOnAction(e -> {stage.setScene(record);});
-		menuCode.setOnAction(e -> {stage.setScene(code);});
-		menuLoad.setOnAction(e -> {stage.setScene(load);});
-		layout.getChildren().addAll(menuRecord, menuCode, menuLoad);
-		
-		//main = new Scene(layout, 300, 250);
-		//stage.setScene(main);
-		
 		eventsScrollPane = new ScrollPane();
 		eventsScrollPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
 		events = new VBox();
-		events.getChildren().add(new Label("hi"));
+		//events.getChildren().add(new Label("hi"));
+		events.getChildren().add(new EventLabel("Start"));
 		eventsScrollPane.setContent(events);
 		main = new Scene(eventsScrollPane, 300, 250);
 		stage.setScene(main);
-		
-		//events.setContent(value);
-		//events.getChildren().add(new Label());
-		
-		record = new Scene(new HBox(new Button("record")));
-		code = new Scene(new HBox(new Button("code")));
-		load = new Scene(new HBox(new Button("load")));
 		
 		stage.show();
 	}
@@ -116,12 +84,12 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 
 	@Override
 	public void nativeMousePressed(NativeMouseEvent e) {
-		say("pressed: " + e.getPoint());
+		//say("pressed: " + e.getPoint());
 	}
 
 	@Override
 	public void nativeMouseReleased(NativeMouseEvent e) {
-		say("released: " + e.getPoint());
+		//say("released: " + e.getPoint());
 	}
 
 	@Override
@@ -131,14 +99,14 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 
 	@Override
 	public void nativeMouseDragged(NativeMouseEvent e) {
-		say("drag");
+		//say("drag");
 	}
 
 	@Override
 	public void nativeMouseWheelMoved(NativeMouseWheelEvent e) {
-		say("Scrolled: " + e.getWheelRotation());
+		//say("Scrolled: " + e.getWheelRotation());
 		Platform.runLater( () -> {
-			events.getChildren().add(new Label("Scrolled: " + e.getWheelRotation()));
+			events.getChildren().add(new EventLabel("Scrolled: " + e.getWheelRotation()));
 			eventsScrollPane.setVvalue(1.0);
 		});
 	}
@@ -147,8 +115,5 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 	public static void main(String[] args) {
 		launch(args);
 	}
-
-
-	
 
 }
