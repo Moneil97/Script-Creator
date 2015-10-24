@@ -4,8 +4,11 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -53,7 +56,7 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 		System.exit(0);
 	}
 	
-	VBox events;
+	static VBox events;
 	ScrollPane eventsScrollPane;
 	
 	@Override
@@ -61,13 +64,28 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 		
 		stage.setTitle("Script Creator");
 		
+		//Center
+		events = new VBox();
 		eventsScrollPane = new ScrollPane();
 		eventsScrollPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-		events = new VBox();
-		//events.getChildren().add(new Label("hi"));
-		events.getChildren().add(new EventLabel("Start"));
 		eventsScrollPane.setContent(events);
-		main = new Scene(eventsScrollPane, 300, 250);
+		
+		//Left
+		VBox left = new VBox();
+		Button record = new Button("Record"), add = new Button("Add");
+		CheckBox recordWheel = new CheckBox("Wheel"), recordMouseMovements= new CheckBox("Movement"), recordTime= new CheckBox("Time");
+		add.setOnAction(e -> events.getChildren().add(new EditableLabel()));
+		left.getChildren().addAll(add,record, recordWheel, recordTime, recordMouseMovements);
+		
+		//Bottom
+		
+		
+		//Container
+		BorderPane mainLayout = new BorderPane();
+		mainLayout.setCenter(eventsScrollPane);
+		mainLayout.setLeft(left);
+		
+		main = new Scene(mainLayout, 300, 250);
 		stage.setScene(main);
 		
 		stage.show();
@@ -84,12 +102,19 @@ public class ScriptCreator extends Application implements NativeMouseInputListen
 
 	@Override
 	public void nativeMousePressed(NativeMouseEvent e) {
-		//say("pressed: " + e.getPoint());
+		Platform.runLater( () -> {
+			events.getChildren().add(new EventLabel("Pressed: " + e.getButton()));
+			eventsScrollPane.setVvalue(1.0);
+		});
 	}
 
 	@Override
 	public void nativeMouseReleased(NativeMouseEvent e) {
 		//say("released: " + e.getPoint());
+		Platform.runLater( () -> {
+			events.getChildren().add(new EventLabel("Released: " + e.getButton()));
+			eventsScrollPane.setVvalue(1.0);
+		});
 	}
 
 	@Override
